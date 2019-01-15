@@ -3,25 +3,9 @@ import ReplayKit
 
 class RecordViewController: UIViewController {
 
-    private let stackView: UIStackView = {
-        let stackView = UIStackView()
-        stackView.axis = .horizontal
-        stackView.alignment = .fill
-        stackView.distribution = .fillEqually
-        return stackView
-    }()
-
-    private let startRecordingButton: UIButton = {
+    private let recordButton: UIButton = {
         let button = UIButton(type: .system)
         button.setTitle("Start", for: .normal)
-        button.addTarget(self, action: #selector(startRecording), for: .touchUpInside)
-        return button
-    }()
-
-    private let stopRecordingButton: UIButton = {
-        let button = UIButton(type: .system)
-        button.setTitle("Stop", for: .normal)
-        button.addTarget(self, action: #selector(stopRecording), for: .touchUpInside)
         return button
     }()
 
@@ -34,20 +18,24 @@ class RecordViewController: UIViewController {
     }
 
     private func initView() {
-        stackView.addArrangedSubview(startRecordingButton)
-        stackView.addArrangedSubview(stopRecordingButton)
-        view = stackView
+        view = recordButton
     }
 
     private func updateUI(_ isRecording: Bool) {
         DispatchQueue.main.async { [unowned self] in
             if !self.recorder.isAvailable {
-                self.startRecordingButton.isEnabled = false
-                self.stopRecordingButton.isEnabled = false
+                self.recordButton.isEnabled = false
                 return
             }
-            self.startRecordingButton.isEnabled = !isRecording
-            self.stopRecordingButton.isEnabled = isRecording
+            if isRecording {
+                self.recordButton.setTitle("Stop", for: .normal)
+                self.recordButton.removeTarget(self, action: #selector(self.startRecording), for: .touchUpInside)
+                self.recordButton.addTarget(self, action: #selector(self.stopRecording), for: .touchUpInside)
+            } else {
+                self.recordButton.setTitle("Start", for: .normal)
+                self.recordButton.removeTarget(self, action: #selector(self.stopRecording), for: .touchUpInside)
+                self.recordButton.addTarget(self, action: #selector(self.startRecording), for: .touchUpInside)
+            }
         }
     }
 
