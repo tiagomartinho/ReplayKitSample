@@ -39,7 +39,7 @@ class RecordViewController: UIViewController {
         }
     }
 
-    @IBAction func startRecording(_ sender: AnyObject) {
+    @objc func startRecording() {
         recorder.startRecording(withMicrophoneEnabled: true) { [unowned self] error in
             if let error = error {
                 NSLog("Failed start recording: \(error.localizedDescription)")
@@ -50,7 +50,7 @@ class RecordViewController: UIViewController {
         }
     }
 
-    @IBAction func stopRecording(_ sender: AnyObject) {
+    @objc func stopRecording() {
         recorder.stopRecording(handler: { [unowned self] (previewViewController, error) in
             self.updateUI(false)
 
